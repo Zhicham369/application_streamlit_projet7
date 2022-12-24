@@ -99,20 +99,6 @@ st.header('Paramètres entrée informations client pour prédire le score client
 st.write(df)
 st.write('---')
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 7)  # 80% training and 20% test
-# Create LGBMClassifier object
-clf = LGBMClassifier(learning_rate= 0.1, max_depth= 6, min_split_gain= 0.03,
-                              n_estimators= 100, num_leaves= 33,class_weight = None )
-lab = preprocessing.LabelEncoder()
-y_transformed = lab.fit_transform(y_train)
-clf = clf.fit(X_train, y_transformed)
-model=clf
-prediction = model.predict_proba(df)
-output=prediction[0]
-
-st.header('Prediction score de client à partir informations client')
-st.write(output)
-st.write('---')
 
 
 
