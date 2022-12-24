@@ -114,17 +114,7 @@ st.header('Prediction score de client à partir informations client')
 st.write(output)
 st.write('---')
 
-model1=LGBMClassifier(learning_rate= 0.1, max_depth= 6, min_split_gain= 0.03,
-                              n_estimators= 100, num_leaves= 33,class_weight = None )
-model1.fit(X,y)
 
-explainer = shap.TreeExplainer(model1)
-shap_values = explainer.shap_values(X)
-
-st.header('importance globale des variables')
-fig, ax = plt.subplots(figsize=(15,5))
-ax=shap.summary_plot(shap_values, X)
-st.pyplot(fig)
 
 
 
