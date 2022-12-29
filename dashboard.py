@@ -129,24 +129,6 @@ st.pyplot(fig)
 
 
 
-#st.header('Distribution feature')
-#chart_data = data['EXT_SOURCE_3']
-#st.bar_chart(chart_data)
-
-
-
-
-
-
-
-
-#st.header('Importance locale des variables')
-#fig, ax = plt.subplots(figsize=(15,5))
-#shap.force_plot(explainer.expected_value[0], shap_values[0][0, :], X.iloc[0, :], matplotlib=True)
-#st.pyplot(fig)
-#fig1, ax1 = plt.subplots(figsize=(15,5))
-#ax1=shap.force_plot(explainer.expected_value[1], shap_values[1][0, :], X.iloc[0, :])
-#st.pyplot(fig1)
 
 
 
