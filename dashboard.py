@@ -46,7 +46,7 @@ elif (int(id_input) in liste_id): #quand un identifiant correct a été saisi on
 
 
     
-    API_url = "http://127.0.0.1:5000/predict_streamlit/<id_client>"+id_input
+    API_url = "https://hziate.pythonanywhere.com/predict_streamlit/<id_client>"+id_input
 
     with st.spinner('Chargement du score du client...'):
         json_url = urlopen(API_url)
