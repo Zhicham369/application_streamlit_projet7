@@ -18,6 +18,7 @@ import streamlit.components.v1 as components
 
 
 
+
 streamlit_data = pd.read_csv("data_dashboard.csv", sep='\t')
 data=streamlit_data.drop(['Unnamed: 0'], axis=1)
 liste_id = data['SK_ID_CURR'].tolist()
@@ -30,24 +31,22 @@ form=st.form("name")
 id_input = form.text_input('Veuillez saisir l\'identifiant d\'un client:', )
 form.form_submit_button("Prédire")
 
-sample_en_regle = str(list(data[data['TARGET'] == 0].sample(5)[['SK_ID_CURR', 'TARGET']]['SK_ID_CURR'].values)).replace('\'', '').replace('[', '').replace(']','')
-chaine_en_regle = 'Exemples d\'id de clients en règle : ' +sample_en_regle
-sample_en_defaut = str(list(data[data['TARGET'] == 1].sample(5)[['SK_ID_CURR', 'TARGET']]['SK_ID_CURR'].values)).replace('\'', '').replace('[', '').replace(']','')
-chaine_en_defaut = 'Exemples d\'id de clients en défaut : ' + sample_en_defaut
+sample_client = str(list(data[data['TARGET'] == 0].sample(5)[['SK_ID_CURR', 'TARGET']]['SK_ID_CURR'].values)).replace('\'', '').replace('[', '').replace(']','')
+chaine_client = 'Exemples d\'id de clients  : ' +sample_client
+
 
 
 if id_input == '': #lorsque rien n'a été saisi
 
-    st.write(chaine_en_defaut)
 
-    st.write(chaine_en_regle)
+    st.write(chaine_client)
 
 
 elif (int(id_input) in liste_id): #quand un identifiant correct a été saisi on appelle l'API
 
 
-    st.write('*',id_input,'*')
-    API_url = "https://hziate.pythonanywhere.com/predict_streamlit/"+id_input
+    
+    API_url = "http://127.0.0.1:5000/predict_streamlit/"+id_input
 
     with st.spinner('Chargement du score du client...'):
         json_url = urlopen(API_url)
@@ -101,7 +100,6 @@ df = user_input_features()
 st.header('Paramètres entrée informations client pour prédire le score client ')
 st.write(df)
 st.write('---')
-
 
 st.header('Choisir la distribution de la variable ')
 option= 'CODE_GENDER'
