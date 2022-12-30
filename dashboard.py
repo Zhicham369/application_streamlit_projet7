@@ -56,7 +56,7 @@ elif (int(id_input) in liste_id): #quand un identifiant correct a été saisi on
         classe_predite2 = API_data['prediction2']
         #affichage de la prédiction
 
-        chaine = 'Prédiction : [ ' + str(round(classe_predite1*100)) + '%   crédit accpté'     + ' , ' + str(round(classe_predite2*100)) + '%   crédit non accpté'    + ']'
+        chaine = 'Prédiction : [ ' + str(round(classe_predite1*100)) + '%   crédit accepté'     + ' , ' + str(round(classe_predite2*100)) + '%   crédit non accepté'    + ']'
 
     st.write(chaine)
 
