@@ -61,66 +61,56 @@ elif (int(id_input) in liste_id): #quand un identifiant correct a été saisi on
 
     st.write(chaine)
 
+    feature_cols = ['PAYMENT_RATE','EXT_SOURCE_1',
+    'EXT_SOURCE_2','EXT_SOURCE_3','AMT_GOODS_PRICE','AMT_ANNUITY',
+    'NAME_EDUCATION_TYPE_Highereducation','AMT_REQ_CREDIT_BUREAU_QRT','CODE_GENDER']
+
+    X = data[feature_cols]
+    y = data['TARGET']
+
+
+    model1 = pickle.load(open('model1.pkl','rb'))
+    explainer = shap.TreeExplainer(model1)
+    shap_values = explainer.shap_values(X)
+
+    def st_shap(plot, height=None):
+        shap_html = f"<head>{shap.getjs()}</head><body>{plot.html()}</body>"
+        components.html(shap_html, height=height)
+
+    st.header('Importance globale des variables')
+    fig, ax = plt.subplots(figsize=(15,5))
+    ax=shap.summary_plot(shap_values, X)
+    st.pyplot(fig)
+
+    st.header('Importance locale de la première variable importante class 1 ')
+    st_shap(shap.force_plot(explainer.expected_value[1], shap_values[1][0, :], X.iloc[0, :]))
+    st.header('Importance locale de la première variable importante class 0')
+    st_shap(shap.force_plot(explainer.expected_value[0], shap_values[0][0, :], X.iloc[0, :]))
+ 
+    st.header('Distribution variable selon les classes et le positionnement de la valeur du client')
+    option= 'CODE_GENDER'
+    option = st.selectbox(
+    'Choisi feature',
+    ('CODE_GENDER', 'NAME_EDUCATION_TYPE_Highereducation'))
+    fig2 = px.histogram(data_frame=data, x=option)
+    st.write(fig2)   
+
+
+   
     new_columns=[]
     for row in data.iterrows():
         if row[1]["SK_ID_CURR"] == int(id_input): 
-            new_columns.append(int(id_input))   
+            new_columns.append("client   " +str(int(id_input)))   
         else: 
             new_columns.append(row[1]["TARGET"])
-   
-
-    data['new_columns']=new_columns
-
+    data['class']= new_columns
     st.header('Box plot comparaison entre clients ')
-
-    box_fig = px.box(data,x="TARGET",y="EXT_SOURCE_3",color="new_columns",points="all")
+    box_fig = px.box(data,x="TARGET",y="EXT_SOURCE_3",color="class",points="all")
     st.write(box_fig)
-    
-    
-    
-st.header('Distribution variable selon les classes et le positionnement de la valeur du client')
-option= 'CODE_GENDER'
-option = st.selectbox(
-    'Choisi feature',
-    ('CODE_GENDER', 'NAME_EDUCATION_TYPE_Highereducation'))
-
-fig2 = px.histogram(data_frame=data, x=option)
-st.write(fig2)
-
-
-
-feature_cols = ['PAYMENT_RATE','EXT_SOURCE_1',
-         'EXT_SOURCE_2','EXT_SOURCE_3','AMT_GOODS_PRICE','AMT_ANNUITY',
-         'NAME_EDUCATION_TYPE_Highereducation','AMT_REQ_CREDIT_BUREAU_QRT','CODE_GENDER']
-
-X = data[feature_cols]
-y = data['TARGET']
-
-
-model1 = pickle.load(open('model1.pkl','rb'))
-explainer = shap.TreeExplainer(model1)
-shap_values = explainer.shap_values(X)
-
-def st_shap(plot, height=None):
-    shap_html = f"<head>{shap.getjs()}</head><body>{plot.html()}</body>"
-    components.html(shap_html, height=height)
-
-st.header('Importance globale des variables')
-fig, ax = plt.subplots(figsize=(15,5))
-ax=shap.summary_plot(shap_values, X)
-st.pyplot(fig)
-
-st.header('Importance locale de la première variable importante class 1 ')
-st_shap(shap.force_plot(explainer.expected_value[1], shap_values[1][0, :], X.iloc[0, :]))
-st.header('Importance locale de la première variable importante class 0')
-st_shap(shap.force_plot(explainer.expected_value[0], shap_values[0][0, :], X.iloc[0, :]))
-
-
 
 
 
 st.sidebar.header('Information de client')
-
 def user_input_features():
     PAYMENT_RATE = st.sidebar.slider('PAYMENT_RATE', value=0.13)
     EXT_SOURCE_1 = st.sidebar.slider('EXT_SOURCE_1',value=0.97)
@@ -145,9 +135,6 @@ def user_input_features():
     return features
 
 df = user_input_features()
-
-
-
 
 model = pickle.load(open('model.pkl','rb'))
 prediction = model.predict_proba(df)
